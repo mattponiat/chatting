@@ -1,15 +1,17 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import * as React from "react";
-import { trpc } from "../utils/trpc";
-import { useLocalStorageState } from "ahooks";
-import Pusher from "pusher-js";
-import { Message } from "@prisma/client";
-import { signIn, useSession } from "next-auth/react";
+import { flushSync } from "react-dom";
+//Styles
 import { TextInput, ActionIcon } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons";
+//Helpers
 import { format } from "date-fns";
-import { flushSync } from "react-dom";
+//Backend
+import { trpc } from "../utils/trpc";
+import { Message } from "@prisma/client";
+import Pusher from "pusher-js";
+import { signIn, useSession, signOut } from "next-auth/react";
 
 let loaded = false;
 
@@ -21,9 +23,7 @@ const Home: NextPage = () => {
   const [touched, setTouched] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [newMessages, setNewMessages] = React.useState<Message[]>([]);
-  const [author, setAuthor] = useLocalStorageState<string>("author", {
-    defaultValue: "",
-  });
+  const [author, setAuthor] = React.useState<string>("");
   const session = useSession();
   const listRef = React.useRef<HTMLUListElement>(null);
 
@@ -81,6 +81,18 @@ const Home: NextPage = () => {
 
   const messages = (oldMessages?.data ?? []).concat(newMessages);
 
+  React.useEffect(() => {
+    if (
+      session.status === "authenticated" &&
+      session.data.user?.name != undefined
+    ) {
+      setAuthor(session.data.user.name);
+    }
+    if (session.status === "unauthenticated") {
+      setAuthor("Anonymous");
+    }
+  }, [session.data?.user?.name, session.status, setAuthor]);
+
   return (
     <>
       <Head>
@@ -89,22 +101,39 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="flex flex-col items-center justify-end gap-5 min-h-screen p-8">
-        <div className="max-w-[200px] w-full author-input-styles">
-          <TextInput
-            placeholder="Your username"
-            value={author}
-            onChange={(event) => setAuthor(event.target.value)}
-          />
+        <div className="flex items-center justify-end gap-2 max-w-3xl w-full">
+          {session.status === "unauthenticated" ? (
+            <button
+              className="min-w-[80px] min-h-[40px] bg-[#393e46] hover:bg-[#444649] transition-colors duration-150 rounded-lg text-[#eeeeee]"
+              onClick={() => signIn()}
+            >
+              Log In
+            </button>
+          ) : null}
+          {session.status === "authenticated" ? (
+            <>
+              <span className="text-base mr-auto text-[#eeeeee]">
+                Logged in as: {author}
+              </span>
+              <button
+                className="min-w-[80px] min-h-[40px] bg-[#393e46] hover:bg-[#444649] transition-colors duration-150 rounded-lg text-[#eeeeee]"
+                onClick={() => signOut()}
+              >
+                Log Out
+              </button>
+            </>
+          ) : null}
         </div>
         <ul
-          className="flex flex-col items-start h-[755px] max-w-3xl w-full px-3 pt-3 bg-[#393e46] box-shadow rounded-lg text-[#eeeeee] text-xl overflow-y-scroll"
+          className="flex flex-col items-start h-[750px] max-w-3xl w-full px-3 pt-3 bg-[#393e46] box-shadow rounded-lg text-[#eeeeee] text-xl overflow-y-auto"
           ref={listRef}
         >
           {messages.map((message) => {
             const time = format(new Date(message.timestamp), "HH:mm");
             return (
-              <li key={message.id} className="pb-3 w-full break-all">
-                <span className="text-sm">{time}</span> {message.author}:{" "}
+              <li key={message.id} className="pb-3 w-full break-words">
+                <span className="text-sm">{time}</span>{" "}
+                <span className="text-slate-300">{message.author}</span>:{" "}
                 {message.content}
               </li>
             );
@@ -114,7 +143,7 @@ const Home: NextPage = () => {
           <TextInput
             radius="xl"
             size="md"
-            placeholder="Post a new message"
+            placeholder="Send new message"
             error={touched ? "Message can't be empty" : ""}
             value={message}
             onChange={(event) => {
