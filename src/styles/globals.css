@@ -27,13 +27,6 @@ html {
     color: #eeeeee;
   }
 
-  .author-input-styles input {
-    background-color: #393e46;
-    border: #393e46 1px solid;
-    color: #eeeeee;
-    font-size: 16px;
-  }
-
   .box-shadow {
     box-shadow: #161b20 0px 0px 6px 0px;
   }
