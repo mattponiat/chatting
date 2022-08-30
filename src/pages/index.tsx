@@ -12,6 +12,7 @@ import { trpc } from "../utils/trpc";
 import { Message } from "@prisma/client";
 import Pusher from "pusher-js";
 import { signIn, useSession, signOut } from "next-auth/react";
+import { env } from "../env/client.mjs";
 
 let loaded = false;
 
@@ -58,8 +59,8 @@ const Home: NextPage = () => {
   };
 
   React.useEffect(() => {
-    const pusher = new Pusher("1b4ce088cf6b223134ec", {
-      cluster: "eu",
+    const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
+      cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
     });
 
     const channel = pusher.subscribe("chat");

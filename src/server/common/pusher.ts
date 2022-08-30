@@ -1,11 +1,12 @@
 import PusherServer from "pusher";
+import { env } from "../../env/server.mjs";
 
 const pusher = new PusherServer({
-  appId: "1469769",
-  key: "1b4ce088cf6b223134ec",
-  secret: "28756013e1f0293e2bb7",
-  cluster: "eu",
-  useTLS: true,
+  appId: env.PUSHER_APP_ID,
+  key: env.PUSHER_APP_KEY,
+  secret: env.PUSHER_APP_SECRET,
+  cluster: env.PUSHER_APP_CLUSTER,
+  useTLS: env.PUSHER_SERVER_TLS === "true",
 });
 
 export { pusher };
