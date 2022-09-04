@@ -5,7 +5,10 @@ import { pusher } from "../common/pusher";
 export const messageRouter = createRouter()
   .mutation("send", {
     input: z.object({
-      text: z.string().min(1),
+      text: z
+        .string()
+        .min(1, "Message can't be empty")
+        .max(500, "Message can't be longer than 500 characters"),
       author: z.string(),
     }),
     async resolve({ input, ctx }) {
