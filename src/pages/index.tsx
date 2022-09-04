@@ -40,6 +40,7 @@ const Home: NextPage = () => {
       setMessage("");
     }
   };
+
   const handleKeyDown = (e: { key: string }) => {
     if (e.key === "Enter") {
       handleSendMessage();
@@ -102,10 +103,10 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="flex flex-col items-center justify-end gap-5 min-h-screen p-8">
-        <div className="flex items-center justify-end gap-2 max-w-3xl w-full">
+        <div className="flex items-center justify-end gap-2 max-w-3xl w-full text-[#eeeeee]">
           {session.status === "unauthenticated" ? (
             <button
-              className="min-w-[80px] min-h-[40px] bg-[#393e46] hover:bg-[#444649] transition-colors duration-150 rounded-lg text-[#eeeeee]"
+              className="min-w-[80px] min-h-[40px] bg-[#393e46] hover:bg-[#444649] transition-colors duration-150 rounded-lg"
               onClick={() => signIn()}
             >
               Log In
@@ -113,11 +114,23 @@ const Home: NextPage = () => {
           ) : null}
           {session.status === "authenticated" ? (
             <>
-              <span className="text-base mr-auto text-[#eeeeee]">
-                Logged in as: {author}
-              </span>
+              <div className="flex items-center gap-1 mr-auto text-lg">
+                {/*eslint-disable-next-line @next/next/no-img-element*/}
+                <img
+                  src={
+                    session.data.user?.image
+                      ? session.data.user.image
+                      : "https://t3.ftcdn.net/jpg/02/09/37/00/360_F_209370065_JLXhrc5inEmGl52SyvSPeVB23hB6IjrR.jpg"
+                  }
+                  alt="User logo"
+                  width={30}
+                  height={30}
+                  className="rounded-full"
+                />
+                <span className="text-slate-300">{author}</span>
+              </div>
               <button
-                className="min-w-[80px] min-h-[40px] bg-[#393e46] hover:bg-[#444649] transition-colors duration-150 rounded-lg text-[#eeeeee]"
+                className="min-w-[80px] min-h-[40px] bg-[#393e46] hover:bg-[#444649] transition-colors duration-150 rounded-lg"
                 onClick={() => signOut()}
               >
                 Log Out
@@ -145,6 +158,10 @@ const Home: NextPage = () => {
             radius="xl"
             size="md"
             placeholder="Send new message"
+            maxLength={500}
+            minLength={1}
+            autoComplete="off"
+            spellCheck="false"
             error={touched ? "Message can't be empty" : ""}
             value={message}
             onChange={(event) => {
@@ -155,6 +172,7 @@ const Home: NextPage = () => {
             onBlur={() => setTouched(false)}
             rightSection={
               <ActionIcon
+                type="submit"
                 className="bg-yellow-500 transition-all duration-150"
                 size={32}
                 radius="xl"
