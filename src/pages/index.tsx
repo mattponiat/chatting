@@ -77,7 +77,7 @@ const Home: NextPage = () => {
     loaded = true;
 
     return () => {
-      pusher.disconnect();
+      pusher.unsubscribe("chat");
     };
   }, []);
 
@@ -102,7 +102,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col items-center justify-end gap-5 min-h-screen p-8">
+      <main className="flex flex-col items-center justify-end gap-5 min-h-screen max-w-full p-8">
         <div className="flex items-center justify-end gap-2 max-w-3xl w-full text-[#eeeeee]">
           {session.status === "unauthenticated" ? (
             <button
