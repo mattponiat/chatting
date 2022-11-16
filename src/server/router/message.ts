@@ -9,13 +9,16 @@ export const messageRouter = createRouter()
         .string()
         .min(1, "Message can't be empty")
         .max(500, "Message can't be longer than 500 characters"),
-      author: z.string(),
     }),
     async resolve({ input, ctx }) {
+      if (!ctx.session?.user?.id) throw new Error("Not logged in");
       const message = await ctx.prisma.message.create({
         data: {
           content: input.text,
-          author: input.author,
+          authorId: ctx.session.user.id,
+        },
+        include: {
+          author: true,
         },
       });
 
@@ -26,6 +29,8 @@ export const messageRouter = createRouter()
   })
   .query("getAll", {
     async resolve({ ctx }) {
-      return await ctx.prisma.message.findMany();
+      return await ctx.prisma.message.findMany({
+        include: { author: true },
+      });
     },
   });

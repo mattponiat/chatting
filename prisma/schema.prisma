@@ -11,7 +11,8 @@ model Message {
     id        String   @id @default(cuid())
     content   String
     timestamp DateTime @default(now())
-    author    String
+    authorId  String
+    author    User     @relation(fields: [authorId], references: [id])
 }
 
 // Necessary for Next auth
@@ -49,6 +50,8 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    color         String    @default("#CBD5E1")
+    Message       Message[]
 }
 
 model VerificationToken {

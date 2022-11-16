@@ -7,12 +7,15 @@ import { TextInput, ActionIcon } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons";
 //Helpers
 import { format } from "date-fns";
+import { Messages } from "../types/types";
 //Backend
+import { Message, User } from "@prisma/client";
 import { trpc } from "../utils/trpc";
-import { Message } from "@prisma/client";
 import Pusher from "pusher-js";
 import { signIn, useSession, signOut } from "next-auth/react";
 import { env } from "../env/client.mjs";
+//Components
+import ColorPicker from "../components/ColorPicker";
 
 let loaded = false;
 
@@ -23,10 +26,10 @@ const Home: NextPage = () => {
   const sendMessage = trpc.useMutation(["message.send"]);
   const [touched, setTouched] = React.useState(false);
   const [message, setMessage] = React.useState("");
-  const [newMessages, setNewMessages] = React.useState<Message[]>([]);
-  const [author, setAuthor] = React.useState<string>("");
+  const [newMessages, setNewMessages] = React.useState<Messages>([]);
   const session = useSession();
   const listRef = React.useRef<HTMLUListElement>(null);
+  const currentUser = trpc.useQuery(["user.getCurrent"]);
 
   const handleSendMessage = () => {
     if (message.length === 0) {
@@ -34,7 +37,6 @@ const Home: NextPage = () => {
     } else {
       sendMessage.mutateAsync({
         text: message,
-        author: author,
       });
       setTouched(false);
       setMessage("");
@@ -66,13 +68,20 @@ const Home: NextPage = () => {
 
     const channel = pusher.subscribe("chat");
 
-    channel.bind("message", (message: Message) => {
-      flushSync(() => {
-        message.timestamp = new Date(message.timestamp);
-        setNewMessages((newMessages) => [...newMessages, message]);
-      });
-      scrollToLastMessage();
-    });
+    channel.bind(
+      "message",
+      (
+        message: Message & {
+          author: User;
+        }
+      ) => {
+        flushSync(() => {
+          message.timestamp = new Date(message.timestamp);
+          setNewMessages((newMessages) => [...newMessages, message]);
+        });
+        scrollToLastMessage();
+      }
+    );
 
     loaded = true;
 
@@ -82,18 +91,6 @@ const Home: NextPage = () => {
   }, []);
 
   const messages = (oldMessages?.data ?? []).concat(newMessages);
-
-  React.useEffect(() => {
-    if (
-      session.status === "authenticated" &&
-      session.data.user?.name != undefined
-    ) {
-      setAuthor(session.data.user.name);
-    }
-    if (session.status === "unauthenticated") {
-      setAuthor("Anonymous");
-    }
-  }, [session.data?.user?.name, session.status, setAuthor]);
 
   return (
     <>
@@ -114,7 +111,7 @@ const Home: NextPage = () => {
           ) : null}
           {session.status === "authenticated" ? (
             <>
-              <div className="flex items-center gap-1 mr-auto text-lg">
+              <div className="flex items-center gap-2 mr-auto text-lg">
                 {/*eslint-disable-next-line @next/next/no-img-element*/}
                 <img
                   src={
@@ -127,8 +124,11 @@ const Home: NextPage = () => {
                   height={30}
                   className="rounded-full"
                 />
-                <span className="text-slate-300">{author}</span>
+                <span style={{ color: currentUser.data?.color }}>
+                  {session.data?.user?.name ?? "Anonymous"}
+                </span>
               </div>
+              <ColorPicker />
               <button
                 className="min-w-[80px] min-h-[40px] bg-[#393e46] hover:bg-[#444649] transition-colors duration-150 rounded-lg"
                 onClick={() => signOut()}
@@ -147,8 +147,10 @@ const Home: NextPage = () => {
             return (
               <li key={message.id} className="pb-3 w-full break-words">
                 <span className="text-sm">{time}</span>{" "}
-                <span className="text-slate-300">{message.author}</span>:{" "}
-                {message.content}
+                <span style={{ color: message.author.color }}>
+                  {message.author.name}
+                </span>
+                : {message.content}
               </li>
             );
           })}
@@ -170,6 +172,7 @@ const Home: NextPage = () => {
             }}
             onKeyDown={handleKeyDown}
             onBlur={() => setTouched(false)}
+            rightSectionWidth={42}
             rightSection={
               <ActionIcon
                 type="submit"
@@ -184,7 +187,6 @@ const Home: NextPage = () => {
                 <IconArrowRight size={18} stroke={1.5} />
               </ActionIcon>
             }
-            rightSectionWidth={42}
           />
         </div>
       </main>
