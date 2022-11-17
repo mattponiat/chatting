@@ -7,9 +7,9 @@ import { TextInput, ActionIcon } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons";
 //Helpers
 import { format } from "date-fns";
-import { Messages } from "../types/types";
+import { type Messages } from "../types/types";
 //Backend
-import { Message, User } from "@prisma/client";
+import { type Message, type User } from "@prisma/client";
 import { trpc } from "../utils/trpc";
 import Pusher from "pusher-js";
 import { signIn, useSession, signOut } from "next-auth/react";
@@ -20,16 +20,16 @@ import ColorPicker from "../components/ColorPicker";
 let loaded = false;
 
 const Home: NextPage = () => {
-  const oldMessages = trpc.useQuery(["message.getAll"], {
+  const oldMessages = trpc.message.getAll.useQuery(undefined, {
     enabled: !loaded,
   });
-  const sendMessage = trpc.useMutation(["message.send"]);
+  const sendMessage = trpc.message.send.useMutation();
   const [touched, setTouched] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [newMessages, setNewMessages] = React.useState<Messages>([]);
   const session = useSession();
   const listRef = React.useRef<HTMLUListElement>(null);
-  const currentUser = trpc.useQuery(["user.getCurrent"]);
+  const currentUser = trpc.user.getCurrent.useQuery();
 
   const handleSendMessage = () => {
     if (message.length === 0) {
@@ -99,11 +99,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col items-center justify-end gap-5 min-h-screen max-w-full p-8">
-        <div className="flex items-center justify-end gap-2 max-w-3xl w-full text-[#eeeeee]">
+      <main className="flex min-h-screen max-w-full flex-col items-center justify-end gap-5 p-8">
+        <div className="flex w-full max-w-3xl items-center justify-end gap-2 text-[#eeeeee]">
           {session.status === "unauthenticated" ? (
             <button
-              className="min-w-[80px] min-h-[40px] bg-[#393e46] hover:bg-[#444649] transition-colors duration-150 rounded-lg"
+              className="min-h-[40px] min-w-[80px] rounded-lg bg-[#393e46] transition-colors duration-150 hover:bg-[#444649]"
               onClick={() => signIn()}
             >
               Log In
@@ -111,7 +111,7 @@ const Home: NextPage = () => {
           ) : null}
           {session.status === "authenticated" ? (
             <>
-              <div className="flex items-center gap-2 mr-auto text-lg">
+              <div className="mr-auto flex items-center gap-2 text-lg">
                 {/*eslint-disable-next-line @next/next/no-img-element*/}
                 <img
                   src={
@@ -125,12 +125,12 @@ const Home: NextPage = () => {
                   className="rounded-full"
                 />
                 <span style={{ color: currentUser.data?.color }}>
-                  {session.data?.user?.name ?? "Anonymous"}
+                  {session.data?.user?.name}
                 </span>
               </div>
               <ColorPicker />
               <button
-                className="min-w-[80px] min-h-[40px] bg-[#393e46] hover:bg-[#444649] transition-colors duration-150 rounded-lg"
+                className="min-h-[40px] min-w-[80px] rounded-lg bg-[#393e46] transition-colors duration-150 hover:bg-[#444649]"
                 onClick={() => signOut()}
               >
                 Log Out
@@ -139,23 +139,23 @@ const Home: NextPage = () => {
           ) : null}
         </div>
         <ul
-          className="flex flex-col items-start h-[750px] max-w-3xl w-full px-3 pt-3 bg-[#393e46] box-shadow rounded-lg text-[#eeeeee] text-xl overflow-y-auto"
+          className="box-shadow flex h-[750px] w-full max-w-3xl flex-col items-start overflow-y-auto rounded-lg bg-[#393e46] px-3 pt-3 text-xl text-[#eeeeee]"
           ref={listRef}
         >
           {messages.map((message) => {
             const time = format(new Date(message.timestamp), "HH:mm");
             return (
-              <li key={message.id} className="pb-3 w-full break-words">
+              <li key={message.id} className="w-full break-words pb-3">
                 <span className="text-sm">{time}</span>{" "}
-                <span style={{ color: message.author.color }}>
-                  {message.author.name}
+                <span style={{ color: message.author?.color ?? "grey" }}>
+                  {message.author?.name ?? "Anon"}
                 </span>
                 : {message.content}
               </li>
             );
           })}
         </ul>
-        <div className="max-w-lg w-full message-input-styles">
+        <div className="message-input-styles w-full max-w-lg">
           <TextInput
             radius="xl"
             size="md"

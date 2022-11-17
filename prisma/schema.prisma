@@ -11,8 +11,8 @@ model Message {
     id        String   @id @default(cuid())
     content   String
     timestamp DateTime @default(now())
-    authorId  String
-    author    User     @relation(fields: [authorId], references: [id])
+    authorId  String?
+    author    User?    @relation(fields: [authorId], references: [id])
 }
 
 // Necessary for Next auth
