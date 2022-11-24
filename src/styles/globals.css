@@ -16,18 +16,10 @@ body {
   min-height: 100vh;
 }
 
-html {
-  background-color: #222831;
-}
-
 @layer components {
   .message-input-styles input {
-    background-color: #393e46;
-    border: #393e46 1px solid;
-    color: #eeeeee;
-  }
-
-  .box-shadow {
-    box-shadow: #161b20 0px 0px 6px 0px;
+    background-color: #414558;
+    border: #4b5563 1px solid;
+    color: white;
   }
 }

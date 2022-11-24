@@ -24,6 +24,7 @@
     "@trpc/next": "10.0.0-rc.4",
     "@trpc/react-query": "10.0.0-rc.4",
     "@trpc/server": "10.0.0-rc.4",
+    "daisyui": "^2.41.0",
     "date-fns": "^2.29.3",
     "next": "13.0.2",
     "next-auth": "^4.15.1",
