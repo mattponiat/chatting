@@ -22,4 +22,8 @@ body {
     border: #4b5563 1px solid;
     color: white;
   }
+
+  .message-input-styles input::placeholder {
+    color: #c2caf5;
+  }
 }
