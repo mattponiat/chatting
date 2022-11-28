@@ -15,6 +15,7 @@ export const userRouter = router({
         where: { id: ctx.session.user.id },
         data: { color: input.color },
       });
+
       return colors;
     }),
   getCurrent: publicProcedure.query(async ({ ctx }) => {
@@ -23,6 +24,7 @@ export const userRouter = router({
     const user = await ctx.prisma.user.findUnique({
       where: { id: ctx.session.user.id },
     });
+
     return user;
   }),
 });
