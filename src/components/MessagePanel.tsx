@@ -26,7 +26,7 @@ const MessagePanel = ({ listRef, messages, nullUser }: MessagePanelProps) => {
 
         return (
           <li key={message.id} className="w-full break-words pb-3">
-            <span className="text-sm">{time}</span>{" "}
+            <span className="align-bottom text-sm">{time}</span>{" "}
             <span style={{ color: message.author?.color ?? nullUser.color }}>
               {message.author?.name ?? nullUser.name}
             </span>
