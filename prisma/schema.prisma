@@ -50,7 +50,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    color         String    @default("#CBD5E1")
+    color         String    @default("#FFFFFF")
     Message       Message[]
 }
 
