@@ -1,5 +1,5 @@
 import * as React from "react";
-//Color wheel
+//Color slider
 import { useColorSlider } from "@react-aria/color";
 import { type Color, useColorSliderState } from "@react-stately/color";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
@@ -19,9 +19,10 @@ type ColorPickerProps = {
     | "green"
     | "blue"
     | "alpha";
-  defaultValue: string;
+  defaultValue: string | Color;
+  value?: Color;
   onChangeEnd?: (value: Color) => void;
-  onChange: React.Dispatch<React.SetStateAction<Color>>;
+  onChange: (e: Color) => void;
   label?: string;
 };
 
