@@ -18,9 +18,6 @@ const Home: NextPage = () => {
   const oldMessages = trpc.message.getAll.useQuery(undefined, {
     enabled: !loaded,
   });
-  const sendMessage = trpc.message.send.useMutation();
-  const [touched, setTouched] = React.useState(false);
-  const [message, setMessage] = React.useState("");
   const [newMessages, setNewMessages] = React.useState<
     (Message & {
       author: User;
@@ -32,24 +29,6 @@ const Home: NextPage = () => {
     color: "#c2caf5",
     image:
       "https://t3.ftcdn.net/jpg/02/09/37/00/360_F_209370065_JLXhrc5inEmGl52SyvSPeVB23hB6IjrR.jpg",
-  };
-
-  const handleSendMessage = () => {
-    if (message.length === 0) {
-      setTouched(true);
-    } else {
-      sendMessage.mutateAsync({
-        text: message,
-      });
-      setTouched(false);
-      setMessage("");
-    }
-  };
-
-  const handleKeyDown = (e: { key: string }) => {
-    if (e.key === "Enter") {
-      handleSendMessage();
-    }
   };
 
   const scrollToLastMessage = () => {
@@ -68,7 +47,6 @@ const Home: NextPage = () => {
     const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
       cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
     });
-
     const channel = pusher.subscribe("chat");
 
     channel.bind(
@@ -101,21 +79,14 @@ const Home: NextPage = () => {
         <title>Simple chat</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen max-w-full flex-col items-center gap-5 p-8">
+      <main className="flex min-h-screen max-w-full flex-col items-center gap-5 p-6">
         <TopPanel nullUser={nullUser} />
         <MessagePanel
           listRef={listRef}
           messages={messages}
           nullUser={nullUser}
         />
-        <InputPanel
-          touched={touched}
-          setTouched={setTouched}
-          message={message}
-          setMessage={setMessage}
-          handleKeyDown={handleKeyDown}
-          handleSendMessage={handleSendMessage}
-        />
+        <InputPanel />
       </main>
     </>
   );

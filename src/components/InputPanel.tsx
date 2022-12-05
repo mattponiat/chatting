@@ -1,41 +1,65 @@
+import * as React from "react";
+//Backend
+import { trpc } from "../utils/trpc";
+//Utils
+import { z } from "zod";
 //Styles
 import { ActionIcon, TextInput } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons";
 
-type InputPanelProps = {
-  touched: boolean;
-  setTouched: React.Dispatch<React.SetStateAction<boolean>>;
-  message: string;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
-  handleKeyDown: (e: { key: string }) => void;
-  handleSendMessage: () => void;
-};
+const InputPanel = () => {
+  const [message, setMessage] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState("");
+  const [touched, setTouched] = React.useState(false);
+  const sendMessage = trpc.message.send.useMutation();
+  const inputSchema = z.object({
+    message: z
+      .string()
+      .trim()
+      .min(1, "Message can't be empty")
+      .max(500, "Message can't be longer than 500 characters"),
+  });
 
-const InputPanel = ({
-  touched,
-  setTouched,
-  message,
-  setMessage,
-  handleKeyDown,
-  handleSendMessage,
-}: InputPanelProps) => {
+  const handleSendMessage = () => {
+    const results = inputSchema.safeParse({ message: message });
+
+    if (results.success) {
+      sendMessage.mutateAsync({
+        text: message,
+      });
+      setMessage("");
+      setTouched(false);
+    }
+
+    if (!results.success) {
+      const formattedErrors = results.error.format();
+      setErrorMessage(formattedErrors.message?._errors[0] || "");
+      setTouched(true);
+    } else {
+      setErrorMessage("");
+    }
+  };
+
   return (
-    <div className="message-input-styles w-full max-w-lg">
+    <form
+      className="message-input-styles w-full max-w-lg"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSendMessage;
+      }}
+    >
       <TextInput
         radius="md"
         size="md"
         placeholder="Send a new message"
-        maxLength={500}
-        minLength={1}
         autoComplete="off"
         spellCheck="false"
-        error={touched ? "Message can't be empty" : ""}
+        error={touched ? errorMessage : ""}
         value={message}
         onChange={(event) => {
           setMessage(event.target.value);
           setTouched(false);
         }}
-        onKeyDown={handleKeyDown}
         onBlur={() => setTouched(false)}
         rightSectionWidth={42}
         rightSection={
@@ -52,7 +76,7 @@ const InputPanel = ({
           </ActionIcon>
         }
       />
-    </div>
+    </form>
   );
 };
 
