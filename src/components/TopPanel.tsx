@@ -1,11 +1,9 @@
-import React from "react";
+import * as React from "react";
 //Backend
 import { trpc } from "../utils/trpc";
 import { signIn, useSession, signOut } from "next-auth/react";
 //Components
 import ColorPicker from "../components/ColorPicker";
-//Utils
-import { parseColor } from "@react-stately/color";
 
 type NullUser = {
   nullUser: {
@@ -19,14 +17,14 @@ const TopPanel = ({ nullUser }: NullUser) => {
   const session = useSession();
   const currentUser = trpc.user.getCurrent.useQuery();
   const changeColor = trpc.user.changeColor.useMutation();
-  const [color, setColor] = React.useState(parseColor("hsl(0, 100%, 50%)"));
+  const colorRef = React.useRef("");
 
   const handleChangeColor = () => {
-    if (session.status === "authenticated") {
-      changeColor.mutateAsync({
-        color: color.toString("hex"),
+    if (currentUser.data?.color) {
+      changeColor.mutate({
+        color: colorRef.current,
       });
-    }
+    } else return;
   };
 
   return (
@@ -45,8 +43,8 @@ const TopPanel = ({ nullUser }: NullUser) => {
             <img
               src={session.data?.user?.image ?? nullUser.image}
               alt="User logo"
-              width={30}
-              height={30}
+              width={35}
+              height={35}
               className="rounded-full"
             />
             <span style={{ color: currentUser.data?.color }}>
@@ -70,10 +68,10 @@ const TopPanel = ({ nullUser }: NullUser) => {
                   <ColorPicker
                     channel="hue"
                     label="Hue"
-                    defaultValue={hexToCssHsl(
-                      currentUser.data?.color ?? "#FF0000"
-                    )}
-                    onChange={setColor}
+                    defaultValue={hexToHsl(currentUser.data.color)}
+                    onChange={(e) => {
+                      colorRef.current = e.toString("hex");
+                    }}
                     onChangeEnd={handleChangeColor}
                   />
                 </label>
@@ -92,7 +90,7 @@ const TopPanel = ({ nullUser }: NullUser) => {
   );
 };
 
-const hexToCssHsl = (hex: string, valuesOnly = false) => {
+const hexToHsl = (hex: string, valuesOnly = false) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (
     result === null ||
