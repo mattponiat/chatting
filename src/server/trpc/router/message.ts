@@ -8,6 +8,7 @@ export const messageRouter = router({
       z.object({
         text: z
           .string()
+          .trim()
           .min(1, "Message can't be empty")
           .max(500, "Message can't be longer than 500 characters"),
       })
