@@ -5,15 +5,29 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
+import { Asap } from "@next/font/google";
+
+const asap = Asap({ subsets: ["latin"] });
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <>
+      <style jsx global>{`
+        * {
+          font-family: ${asap.style.fontFamily};
+        }
+
+        [role="alert"] {
+          font-family: ${asap.style.fontFamily};
+        }
+      `}</style>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+    </>
   );
 };
 
