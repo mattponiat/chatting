@@ -43,8 +43,8 @@ const TopPanel = ({ nullUser }: NullUser) => {
             <img
               src={session.data?.user?.image ?? nullUser.image}
               alt="User logo"
-              width={35}
-              height={35}
+              width={48}
+              height={48}
               className="rounded-full"
             />
             <span style={{ color: currentUser.data?.color }}>
