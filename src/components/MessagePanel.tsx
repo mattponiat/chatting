@@ -1,6 +1,6 @@
-//Backend
+//Types
 import type { Message, User } from "@prisma/client";
-//Helpers
+//Utils
 import { format } from "date-fns";
 
 type MessagePanelProps = {
