@@ -24,7 +24,7 @@ const InputPanel = () => {
     const results = inputSchema.safeParse({ message: message });
 
     if (results.success) {
-      sendMessage.mutateAsync({
+      sendMessage.mutate({
         text: message,
       });
       setMessage("");
