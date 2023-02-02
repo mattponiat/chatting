@@ -23,7 +23,7 @@ export const messageRouter = router({
           author: true,
         },
       });
-      pusher.trigger("chat", "message", message);
+      await pusher.trigger("chat", "message", message);
 
       return message;
     }),
