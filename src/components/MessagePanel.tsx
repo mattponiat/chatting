@@ -18,7 +18,7 @@ type MessagePanelProps = {
 const MessagePanel = ({ listRef, messages, nullUser }: MessagePanelProps) => {
   return (
     <ul
-      className="flex h-[650px] w-full max-w-3xl flex-col items-start overflow-y-auto rounded-lg bg-neutral px-3 pt-3 text-xl text-white outline outline-1 outline-gray-600 md:h-[660px] xl:h-[750px]"
+      className="flex h-[100dvh] w-full max-w-3xl flex-col items-start overflow-y-auto rounded-lg bg-neutral px-3 pt-3 text-xl text-white outline outline-1 outline-gray-600 "
       ref={listRef}
     >
       {messages.map((message) => {

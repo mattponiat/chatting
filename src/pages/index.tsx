@@ -79,7 +79,7 @@ const Home: NextPage = () => {
         <title>Simple chat</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen max-w-full flex-col items-center gap-5 p-6">
+      <main className="flex h-[100dvh] max-w-full flex-col items-center gap-5 p-6">
         <TopPanel nullUser={nullUser} />
         <MessagePanel
           listRef={listRef}
