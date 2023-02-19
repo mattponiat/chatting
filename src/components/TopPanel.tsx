@@ -31,7 +31,7 @@ const TopPanel = ({ nullUser }: NullUser) => {
     <div className="flex w-full max-w-3xl items-center justify-end gap-2 text-white">
       {session.status === "unauthenticated" || session.status === "loading" ? (
         <button
-          className="btn rounded-lg outline outline-1 outline-gray-600 transition-colors duration-300"
+          className="btn mr-auto w-16 justify-center text-clip whitespace-normal rounded-lg p-2 text-xs outline outline-1 outline-gray-600 transition-colors duration-300 md:w-auto md:p-4 md:text-[14px]"
           onClick={() => signIn()}
         >
           Log In
@@ -43,11 +43,12 @@ const TopPanel = ({ nullUser }: NullUser) => {
             <img
               src={session.data?.user?.image ?? nullUser.image}
               alt="User logo"
-              width={48}
-              height={48}
-              className="rounded-full"
+              className="h-10 w-10 rounded-full md:h-12 md:w-12"
             />
-            <span style={{ color: currentUser.data?.color }}>
+            <span
+              style={{ color: currentUser.data?.color }}
+              className="text-sm md:text-lg"
+            >
               {session.data?.user?.name}
             </span>
           </div>
@@ -55,7 +56,7 @@ const TopPanel = ({ nullUser }: NullUser) => {
             <>
               <label
                 htmlFor="my-modal-4"
-                className="btn mr-auto rounded-lg outline outline-1 outline-gray-600 transition-colors duration-300"
+                className="btn mx-auto w-20 justify-center text-clip whitespace-normal rounded-lg p-2 text-xs outline outline-1 outline-gray-600 transition-colors duration-300 md:w-auto md:p-4 md:text-[14px]"
               >
                 Change color
               </label>
@@ -79,7 +80,7 @@ const TopPanel = ({ nullUser }: NullUser) => {
             </>
           ) : null}
           <button
-            className="btn rounded-lg outline outline-1 outline-gray-600 transition-colors duration-300"
+            className="btn ml-auto w-20 justify-center text-clip whitespace-normal rounded-lg p-2 text-xs outline outline-1 outline-gray-600 transition-colors duration-300 md:w-auto md:p-4 md:text-[14px]"
             onClick={() => signOut()}
           >
             Log Out
