@@ -15,14 +15,17 @@ type TopPanelProps = {
 
 const TopPanel = ({ nullUser }: TopPanelProps) => {
   const session = useSession();
-  const currentUser = trpc.user.getCurrent.useQuery(undefined, {
+  const { data: currentUser } = trpc.user.getCurrent.useQuery(undefined, {
     enabled: session.data?.user !== undefined,
   });
-  const changeColor = trpc.user.changeColor.useMutation();
+  const utils = trpc.useContext();
+  const changeColor = trpc.user.changeColor.useMutation({
+    onSuccess: () => utils.user.getCurrent.invalidate(),
+  });
   const colorRef = React.useRef("");
 
   const handleChangeColor = () => {
-    if (currentUser.data?.color) {
+    if (currentUser?.color) {
       changeColor.mutate({
         color: colorRef.current,
       });
@@ -48,13 +51,13 @@ const TopPanel = ({ nullUser }: TopPanelProps) => {
               className="h-10 w-10 rounded-full md:h-12 md:w-12"
             />
             <span
-              style={{ color: currentUser.data?.color }}
+              style={{ color: currentUser?.color }}
               className="text-sm md:text-lg"
             >
               {session.data?.user?.name}
             </span>
           </div>
-          {currentUser.data?.color ? (
+          {currentUser?.color ? (
             <>
               <label
                 htmlFor="my-modal-4"
@@ -71,7 +74,7 @@ const TopPanel = ({ nullUser }: TopPanelProps) => {
                   <ColorPicker
                     channel="hue"
                     label="Hue"
-                    defaultValue={hexToHsl(currentUser.data.color)}
+                    defaultValue={hexToHsl(currentUser.color)}
                     onChange={(e) => {
                       colorRef.current = e.toString("hex");
                     }}
