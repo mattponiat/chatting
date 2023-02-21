@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../trpc";
+import { router, protectedProcedure } from "../trpc";
 
 export const userRouter = router({
-  changeColor: publicProcedure
+  changeColor: protectedProcedure
     .input(
       z.object({
         color: z.string(),
@@ -18,7 +18,7 @@ export const userRouter = router({
 
       return colors;
     }),
-  getCurrent: publicProcedure.query(async ({ ctx }) => {
+  getCurrent: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session?.user?.id) throw new Error("Not logged in");
 
     const user = await ctx.prisma.user.findUnique({
