@@ -5,7 +5,7 @@ import { signIn, useSession, signOut } from "next-auth/react";
 //Components
 import ColorPicker from "../components/ColorPicker";
 
-type NullUser = {
+type TopPanelProps = {
   nullUser: {
     name: string;
     color: string;
@@ -13,9 +13,11 @@ type NullUser = {
   };
 };
 
-const TopPanel = ({ nullUser }: NullUser) => {
+const TopPanel = ({ nullUser }: TopPanelProps) => {
   const session = useSession();
-  const currentUser = trpc.user.getCurrent.useQuery();
+  const currentUser = trpc.user.getCurrent.useQuery(undefined, {
+    enabled: session.data?.user !== undefined,
+  });
   const changeColor = trpc.user.changeColor.useMutation();
   const colorRef = React.useRef("");
 
