@@ -1,9 +1,9 @@
 import * as React from "react";
 //Backend
-import { trpc } from "../utils/trpc";
+import { trpc } from "src/utils/trpc";
 import { signIn, useSession, signOut } from "next-auth/react";
 //Components
-import ColorPicker from "../components/ColorPicker";
+import ColorPicker from "src/components/ColorPicker";
 
 type TopPanelProps = {
   nullUser: {
@@ -36,7 +36,7 @@ const TopPanel = ({ nullUser }: TopPanelProps) => {
     <div className="flex w-full max-w-3xl items-center justify-end gap-2 text-white">
       {session.status === "unauthenticated" || session.status === "loading" ? (
         <button
-          className="btn mr-auto w-16 justify-center text-clip whitespace-normal rounded-lg p-2 text-xs outline outline-1 outline-gray-600 transition-colors duration-300 md:w-auto md:p-4 md:text-[14px]"
+          className="btn mr-auto w-16 justify-center rounded-lg p-2 text-xs outline outline-1 outline-gray-600 md:w-auto md:p-4 md:text-[14px]"
           onClick={() => signIn()}
         >
           Log In
@@ -61,7 +61,7 @@ const TopPanel = ({ nullUser }: TopPanelProps) => {
             <>
               <label
                 htmlFor="my-modal-4"
-                className="btn mx-auto w-20 justify-center text-clip whitespace-normal rounded-lg p-2 text-xs outline outline-1 outline-gray-600 transition-colors duration-300 md:w-auto md:p-4 md:text-[14px]"
+                className="btn mx-auto w-20 justify-center rounded-lg p-2 text-xs outline outline-1 outline-gray-600 md:w-auto md:p-4 md:text-[14px]"
               >
                 Change color
               </label>
@@ -85,7 +85,7 @@ const TopPanel = ({ nullUser }: TopPanelProps) => {
             </>
           ) : null}
           <button
-            className="btn ml-auto w-20 justify-center text-clip whitespace-normal rounded-lg p-2 text-xs outline outline-1 outline-gray-600 transition-colors duration-300 md:w-auto md:p-4 md:text-[14px]"
+            className="btn ml-auto w-20 justify-center rounded-lg p-2 text-xs outline outline-1 outline-gray-600 md:w-auto md:p-4 md:text-[14px]"
             onClick={() => signOut()}
           >
             Log Out

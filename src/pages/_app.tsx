@@ -2,9 +2,9 @@ import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
-import { trpc } from "../utils/trpc";
+import { trpc } from "src/utils/trpc";
 
-import "../styles/globals.css";
+import "src/styles/globals.css";
 import { Asap } from "@next/font/google";
 
 const asap = Asap({ subsets: ["latin"] });

@@ -1,6 +1,6 @@
 import * as React from "react";
 //Backend
-import { trpc } from "../utils/trpc";
+import { trpc } from "src/utils/trpc";
 //Utils
 import { z } from "zod";
 import Filter from "bad-words";
@@ -69,7 +69,7 @@ const InputPanel = () => {
         rightSection={
           <ActionIcon
             type="submit"
-            className="bg-secondary transition-all duration-300 hover:bg-secondary-focus"
+            className="bg-secondary transition-all duration-200 hover:bg-secondary-focus"
             size={32}
             radius="md"
             variant="filled"
