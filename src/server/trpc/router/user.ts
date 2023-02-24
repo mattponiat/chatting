@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure } from "src/server/trpc/trpc";
 
 export const userRouter = router({
   changeColor: protectedProcedure

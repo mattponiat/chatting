@@ -1,5 +1,5 @@
 import PusherServer from "pusher";
-import { env } from "../../env/server.mjs";
+import { env } from "src/env/server.mjs";
 
 const pusher = new PusherServer({
   appId: env.PUSHER_APP_ID,

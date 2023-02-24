@@ -4,13 +4,13 @@ import * as React from "react";
 import { flushSync } from "react-dom";
 //Backend
 import type { Message, User } from "@prisma/client";
-import { trpc } from "../utils/trpc";
+import { trpc } from "src/utils/trpc";
 import Pusher from "pusher-js";
-import { env } from "../env/client.mjs";
+import { env } from "src/env/client.mjs";
 //Components
-import TopPanel from "../components/TopPanel";
-import InputPanel from "../components/InputPanel";
-import MessagePanel from "../components/MessagePanel";
+import TopPanel from "src/components/TopPanel";
+import InputPanel from "src/components/InputPanel";
+import MessagePanel from "src/components/MessagePanel";
 
 let loaded = false;
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { pusher } from "../../common/pusher";
-import { publicProcedure, router } from "../trpc";
+import { pusher } from "src/server/common/pusher";
+import { publicProcedure, router } from "src/server/trpc/trpc";
 
 export const messageRouter = router({
   send: publicProcedure
