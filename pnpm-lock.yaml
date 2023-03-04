@@ -27,7 +27,6 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.52.0
   '@typescript-eslint/parser': ^5.52.0
   autoprefixer: ^10.4.13
-  bad-words: ^3.0.4
   daisyui: ^2.50.1
   date-fns: ^2.29.3
   eslint: ^8.34.0
@@ -69,7 +68,6 @@ dependencies:
   '@trpc/next': 10.0.0-rc.4_kicugicszcphvxmyxjt4sfm4t4
   '@trpc/react-query': 10.0.0-rc.4_oah74ygki643gf2zpscij3kave
   '@trpc/server': 10.0.0-rc.4
-  bad-words: 3.0.4
   daisyui: 2.50.1_gbtt6ss3tbiz4yjtvdr6fbrj44
   date-fns: 2.29.3
   next: 13.0.2_pjwopsidmaokadturxaafygjp4
@@ -1749,17 +1747,6 @@ packages:
       '@babel/runtime': 7.20.13
       cosmiconfig: 7.1.0
       resolve: 1.22.1
-    dev: false
-
-  /bad-words/3.0.4:
-    resolution: {integrity: sha512-v/Q9uRPH4+yzDVLL4vR1+S9KoFgOEUl5s4axd6NIAq8SV2mradgi4E8lma/Y0cw1ltVdvyegCQQKffCPRCp8fg==}
-    engines: {node: '>=8.0.0'}
-    dependencies:
-      badwords-list: 1.0.0
-    dev: false
-
-  /badwords-list/1.0.0:
-    resolution: {integrity: sha512-oWhaSG67e+HQj3OGHQt2ucP+vAPm1wTbdp2aDHeuh4xlGXBdWwzZ//pfu6swf5gZ8iX0b7JgmSo8BhgybbqszA==}
     dev: false
 
   /balanced-match/1.0.2:
