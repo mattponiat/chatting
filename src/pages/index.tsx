@@ -2,10 +2,20 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import TopPanel from "src/components/TopPanel";
+import { trpc } from "src/utils/trpc";
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const randomChannel = Math.random().toString().slice(2, 12);
+  const createChannel = trpc.channel.create.useMutation();
+
+  const handleCreateChannel = async () => {
+    const channel = await createChannel.mutateAsync();
+    const channelUrl = `/channel/${channel.id}`;
+
+    router.push(channelUrl);
+
+    return channel;
+  };
 
   return (
     <>
@@ -18,7 +28,7 @@ const Home: NextPage = () => {
         <button
           className="btn-secondary btn-lg btn my-auto"
           type="button"
-          onClick={() => router.push(`/channel/${randomChannel}`)}
+          onClick={handleCreateChannel}
         >
           Create new channel
         </button>
