@@ -2,6 +2,7 @@
 import type { Message, User } from "@prisma/client";
 //Utils
 import { format } from "date-fns";
+//Store
 import useChattingStore from "src/store/chattingStore";
 
 type MessagePanelProps = {

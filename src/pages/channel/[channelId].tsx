@@ -12,6 +12,7 @@ import { env } from "src/env/client.mjs";
 import TopPanel from "src/components/TopPanel";
 import InputPanel from "src/components/InputPanel";
 import MessagePanel from "src/components/MessagePanel";
+//Store
 import useChattingStore from "src/store/chattingStore";
 
 let loaded = false;

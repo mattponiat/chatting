@@ -4,6 +4,7 @@ import { trpc } from "src/utils/trpc";
 import { signIn, useSession, signOut } from "next-auth/react";
 //Components
 import ColorPicker from "src/components/ColorPicker";
+//Store
 import useChattingStore from "src/store/chattingStore";
 
 const TopPanel = () => {
