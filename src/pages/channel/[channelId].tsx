@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import * as React from "react";
 import { flushSync } from "react-dom";
+import { useRouter } from "next/router";
 //Backend
 import type { Message, User } from "@prisma/client";
 import { trpc } from "src/utils/trpc";
@@ -16,9 +17,17 @@ import useChattingStore from "src/store/chattingStore";
 let loaded = false;
 
 const Home: NextPage = () => {
-  const oldMessages = trpc.message.getAll.useQuery(undefined, {
-    enabled: !loaded,
-  });
+  const { query, isReady } = useRouter();
+  const channelId = React.useMemo(() => {
+    if (isReady) {
+      return query.channelId as string;
+    } else return "";
+  }, [isReady, query.channelId]);
+
+  const { data: oldMessages } = trpc.message.getAll.useQuery(
+    { channelId: channelId },
+    { enabled: !loaded }
+  );
   const [newMessages, setNewMessages] = React.useState<
     (Message & {
       author: User;
@@ -26,7 +35,7 @@ const Home: NextPage = () => {
   >([]);
   const { listRef } = useChattingStore((state) => ({ listRef: state.listRef }));
 
-  const scrollToLastMessage = () => {
+  const scrollToLastMessage = React.useCallback(() => {
     if (listRef.current != null) {
       const lastChild = listRef.current.lastElementChild;
 
@@ -36,38 +45,40 @@ const Home: NextPage = () => {
         behavior: "smooth",
       });
     }
-  };
+  }, [listRef]);
 
   React.useEffect(() => {
     const pusher = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
       cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
     });
-    const channel = pusher.subscribe("chat");
 
-    channel.bind(
-      "message",
-      (
-        message: Message & {
-          author: User;
+    if (isReady) {
+      const channel = pusher.subscribe(channelId);
+
+      channel.bind(
+        "message",
+        (
+          message: Message & {
+            author: User;
+          }
+        ) => {
+          flushSync(() => {
+            message.timestamp = new Date(message.timestamp);
+            setNewMessages((newMessages) => [...newMessages, message]);
+          });
+          scrollToLastMessage();
         }
-      ) => {
-        flushSync(() => {
-          message.timestamp = new Date(message.timestamp);
-          setNewMessages((newMessages) => [...newMessages, message]);
-        });
-        scrollToLastMessage();
-      }
-    );
+      );
 
-    loaded = true;
+      loaded = true;
 
-    return () => {
-      pusher.unsubscribe("chat");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      return () => {
+        pusher.unsubscribe(channelId);
+      };
+    }
+  }, [channelId, scrollToLastMessage, isReady]);
 
-  const messages = (oldMessages?.data ?? []).concat(newMessages);
+  const messages = (oldMessages ?? []).concat(newMessages);
 
   return (
     <>
@@ -78,7 +89,7 @@ const Home: NextPage = () => {
       <main className="flex h-[100dvh] max-w-full flex-col items-center gap-5 p-6">
         <TopPanel />
         <MessagePanel messages={messages} />
-        <InputPanel />
+        <InputPanel channelId={channelId} />
       </main>
     </>
   );
