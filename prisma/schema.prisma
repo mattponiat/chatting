@@ -7,12 +7,19 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Channel {
+    id       String    @id @default(cuid())
+    messages Message[]
+}
+
 model Message {
     id        String   @id @default(cuid())
     content   String
     timestamp DateTime @default(now())
     authorId  String?
     author    User?    @relation(fields: [authorId], references: [id])
+    channelId String
+    Channel   Channel  @relation(fields: [channelId], references: [id])
 }
 
 // Necessary for Next auth

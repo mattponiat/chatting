@@ -3,17 +3,20 @@ import * as React from "react";
 import { trpc } from "src/utils/trpc";
 //Utils
 import { z } from "zod";
-import Filter from "bad-words";
 //Styles
 import { ActionIcon, TextInput } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons";
 
-const InputPanel = () => {
+type InputPanelProps = {
+  channelId: string;
+};
+
+const InputPanel = ({ channelId }: InputPanelProps) => {
   const [message, setMessage] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
   const [touched, setTouched] = React.useState(false);
-  const filter = new Filter();
   const sendMessage = trpc.message.send.useMutation();
+
   const inputSchema = z.object({
     message: z
       .string()
@@ -29,7 +32,8 @@ const InputPanel = () => {
 
     if (results.success) {
       sendMessage.mutate({
-        text: filter.clean(message),
+        text: message,
+        channelId: channelId,
       });
       setMessage("");
       setTouched(false);

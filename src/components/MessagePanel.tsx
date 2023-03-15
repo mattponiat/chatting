@@ -2,20 +2,20 @@
 import type { Message, User } from "@prisma/client";
 //Utils
 import { format } from "date-fns";
+import useChattingStore from "src/store/chattingStore";
 
 type MessagePanelProps = {
-  listRef: React.RefObject<HTMLUListElement>;
   messages: (Message & {
     author: User | null;
   })[];
-  nullUser: {
-    color: string;
-    name: string;
-    image: string;
-  };
 };
 
-const MessagePanel = ({ listRef, messages, nullUser }: MessagePanelProps) => {
+const MessagePanel = ({ messages }: MessagePanelProps) => {
+  const { nullUser, listRef } = useChattingStore((state) => ({
+    nullUser: state.nullUser,
+    listRef: state.listRef,
+  }));
+
   return (
     <ul
       className="flex h-[100dvh] w-full max-w-3xl flex-col items-start overflow-y-auto rounded-lg bg-neutral px-3 pt-3 text-xl text-white outline outline-1 outline-gray-600 "

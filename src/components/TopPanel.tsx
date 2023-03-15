@@ -4,16 +4,9 @@ import { trpc } from "src/utils/trpc";
 import { signIn, useSession, signOut } from "next-auth/react";
 //Components
 import ColorPicker from "src/components/ColorPicker";
+import useChattingStore from "src/store/chattingStore";
 
-type TopPanelProps = {
-  nullUser: {
-    name: string;
-    color: string;
-    image: string;
-  };
-};
-
-const TopPanel = ({ nullUser }: TopPanelProps) => {
+const TopPanel = () => {
   const session = useSession();
   const { data: currentUser } = trpc.user.getCurrent.useQuery(undefined, {
     enabled: session.data?.user !== undefined,
@@ -23,6 +16,9 @@ const TopPanel = ({ nullUser }: TopPanelProps) => {
     onSuccess: () => utils.user.getCurrent.invalidate(),
   });
   const colorRef = React.useRef("");
+  const { nullUser } = useChattingStore((state) => ({
+    nullUser: state.nullUser,
+  }));
 
   const handleChangeColor = () => {
     if (currentUser?.color) {
@@ -49,6 +45,7 @@ const TopPanel = ({ nullUser }: TopPanelProps) => {
               src={session.data?.user?.image ?? nullUser.image}
               alt="User logo"
               className="h-10 w-10 rounded-full md:h-12 md:w-12"
+              draggable={false}
             />
             <span
               style={{ color: currentUser?.color }}
