@@ -7,11 +7,16 @@ import { z } from "zod";
 import { ActionIcon, TextInput } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons";
 
-const InputPanel = () => {
+type InputPanelProps = {
+  channelId: string;
+};
+
+const InputPanel = ({ channelId }: InputPanelProps) => {
   const [message, setMessage] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
   const [touched, setTouched] = React.useState(false);
   const sendMessage = trpc.message.send.useMutation();
+
   const inputSchema = z.object({
     message: z
       .string()
@@ -28,6 +33,7 @@ const InputPanel = () => {
     if (results.success) {
       sendMessage.mutate({
         text: message,
+        channelId: channelId,
       });
       setMessage("");
       setTouched(false);
