@@ -45,6 +45,7 @@ const TopPanel = () => {
               src={session.data?.user?.image ?? nullUser.image}
               alt="User logo"
               className="h-10 w-10 rounded-full md:h-12 md:w-12"
+              draggable={false}
             />
             <span
               style={{ color: currentUser?.color }}
