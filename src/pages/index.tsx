@@ -22,6 +22,13 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
+        <meta
+          name="description"
+          property="og:description"
+          content="Chatting app"
+        />
+        <meta property="og:title" content="Chatting" />
+        <meta property="og:url" content="https://chat.mattponiat.pl/" />
         <title>Chatting</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
