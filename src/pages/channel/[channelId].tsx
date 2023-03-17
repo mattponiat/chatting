@@ -87,11 +87,11 @@ const Home: NextPage = () => {
         <meta
           name="description"
           property="og:description"
-          content="Chatting random channel"
+          content="Chatting channel"
         />
-        <meta property="og:title" content="Chatting - random channel" />
+        <meta property="og:title" content="Chatting channel" />
         <meta property="og:url" content="https://chat.mattponiat.pl/" />
-        <title>Chatting - random channel</title>
+        <title>Chatting channel</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex h-[100dvh] max-w-full flex-col items-center gap-5 p-6">
