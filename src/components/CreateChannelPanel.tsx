@@ -91,6 +91,7 @@ const CreateChannelPanel = () => {
             }}
           >
             <TextInput
+              type="search"
               radius="md"
               size="md"
               placeholder="Type here"

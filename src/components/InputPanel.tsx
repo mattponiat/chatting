@@ -57,6 +57,7 @@ const InputPanel = ({ channelId }: InputPanelProps) => {
       }}
     >
       <TextInput
+        type="search"
         radius="md"
         size="md"
         placeholder="Send a new message"
