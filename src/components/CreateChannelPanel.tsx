@@ -1,8 +1,11 @@
 import * as React from "react";
-import { TextInput } from "@mantine/core";
-import { z } from "zod";
-import { trpc } from "src/utils/trpc";
 import { useRouter } from "next/router";
+//Backend
+import { trpc } from "src/utils/trpc";
+//Components
+import { TextInput } from "@mantine/core";
+//Utils
+import { z } from "zod";
 
 const CreateChannelPanel = () => {
   const router = useRouter();

@@ -3,7 +3,7 @@ import * as React from "react";
 import { trpc } from "src/utils/trpc";
 //Utils
 import { z } from "zod";
-//Styles
+//Components
 import { ActionIcon, TextInput } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons";
 
