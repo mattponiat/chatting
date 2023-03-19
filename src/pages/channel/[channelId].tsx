@@ -12,6 +12,7 @@ import { env } from "src/env/client.mjs";
 import TopPanel from "src/components/TopPanel";
 import InputPanel from "src/components/InputPanel";
 import MessagePanel from "src/components/MessagePanel";
+import WrongChannelPanel from "src/components/WrongChannelPanel";
 //Store
 import useChattingStore from "src/store/chattingStore";
 
@@ -25,7 +26,7 @@ const Home: NextPage = () => {
     } else return "";
   }, [isReady, query.channelId]);
 
-  const { data: oldMessages } = trpc.message.getAll.useQuery(
+  const { data: oldMessages, isFetched } = trpc.message.getAll.useQuery(
     { channelId: channelId },
     { enabled: !loaded }
   );
@@ -35,6 +36,10 @@ const Home: NextPage = () => {
     })[]
   >([]);
   const { listRef } = useChattingStore((state) => ({ listRef: state.listRef }));
+  const allChannels = trpc.channel.getAll.useQuery();
+  const existingChannel = allChannels.data?.find(
+    (channel) => channel.id === channelId
+  );
 
   const scrollToLastMessage = React.useCallback(() => {
     if (listRef.current != null) {
@@ -96,8 +101,14 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex h-[100dvh] max-w-full flex-col items-center gap-5 p-6">
         <TopPanel />
-        <MessagePanel messages={messages} />
-        <InputPanel channelId={channelId} />
+        {!isFetched ? null : isFetched && existingChannel ? (
+          <>
+            <MessagePanel messages={messages} />
+            <InputPanel channelId={channelId} />
+          </>
+        ) : (
+          <WrongChannelPanel />
+        )}
       </main>
     </>
   );
