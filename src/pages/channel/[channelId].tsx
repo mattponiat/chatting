@@ -18,7 +18,7 @@ import useChattingStore from "src/store/chattingStore";
 
 let loaded = false;
 
-const Home: NextPage = () => {
+const ChannelPage: NextPage = () => {
   const { query, isReady } = useRouter();
   const channelId = React.useMemo(() => {
     if (isReady) {
@@ -26,7 +26,7 @@ const Home: NextPage = () => {
     } else return "";
   }, [isReady, query.channelId]);
 
-  const { data: oldMessages, isFetched } = trpc.message.getAll.useQuery(
+  const { data: oldMessages, status } = trpc.message.getAll.useQuery(
     { channelId: channelId },
     { enabled: !loaded }
   );
@@ -35,6 +35,7 @@ const Home: NextPage = () => {
       author: User;
     })[]
   >([]);
+  const [errorCode, setErrorCode] = React.useState(0);
   const { listRef } = useChattingStore((state) => ({ listRef: state.listRef }));
   const allChannels = trpc.channel.getAll.useQuery();
   const existingChannel = allChannels.data?.find(
@@ -86,6 +87,12 @@ const Home: NextPage = () => {
 
   const messages = (oldMessages ?? []).concat(newMessages);
 
+  React.useEffect(() => {
+    if (status === "success" && existingChannel === undefined) {
+      setErrorCode(404);
+    }
+  }, [existingChannel, status]);
+
   return (
     <>
       <Head>
@@ -101,17 +108,17 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex h-[100dvh] max-w-full flex-col items-center gap-5 p-6">
         <TopPanel />
-        {!isFetched ? null : isFetched && existingChannel ? (
+        {errorCode === 404 ? (
+          <WrongChannelPanel />
+        ) : (
           <>
             <MessagePanel messages={messages} />
             <InputPanel channelId={channelId} />
           </>
-        ) : (
-          <WrongChannelPanel />
         )}
       </main>
     </>
   );
 };
 
-export default Home;
+export default ChannelPage;
