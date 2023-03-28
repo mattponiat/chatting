@@ -6,6 +6,7 @@ import { z } from "zod";
 //Components
 import { ActionIcon, TextInput } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons";
+import { toast } from "react-hot-toast";
 
 type InputPanelProps = {
   channelId: string;
@@ -13,8 +14,6 @@ type InputPanelProps = {
 
 const InputPanel = ({ channelId }: InputPanelProps) => {
   const [message, setMessage] = React.useState("");
-  const [errorMessage, setErrorMessage] = React.useState("");
-  const [touched, setTouched] = React.useState(false);
   const sendMessage = trpc.message.send.useMutation();
 
   const inputSchema = z.object({
@@ -36,15 +35,12 @@ const InputPanel = ({ channelId }: InputPanelProps) => {
         channelId: channelId,
       });
       setMessage("");
-      setTouched(false);
     }
 
     if (!results.success) {
       const formattedErrors = results.error.format();
-      setErrorMessage(formattedErrors.message?._errors[0] || "");
-      setTouched(true);
-    } else {
-      setErrorMessage("");
+      const errorMessage = formattedErrors.message?._errors[0] || "";
+      toast.error(errorMessage);
     }
   };
 
@@ -63,13 +59,10 @@ const InputPanel = ({ channelId }: InputPanelProps) => {
         placeholder="Send a new message"
         autoComplete="off"
         spellCheck="false"
-        error={touched ? errorMessage : ""}
         value={message}
         onChange={(event) => {
           setMessage(event.target.value);
-          setTouched(false);
         }}
-        onBlur={() => setTouched(false)}
         rightSectionWidth={42}
         rightSection={
           <ActionIcon
@@ -78,7 +71,6 @@ const InputPanel = ({ channelId }: InputPanelProps) => {
             size={32}
             radius="md"
             variant="filled"
-            onBlur={() => setTouched(false)}
             onClick={handleSendMessage}
           >
             <IconArrowRight size={18} stroke={1.5} color="#414558" />

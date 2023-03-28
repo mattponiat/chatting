@@ -6,12 +6,11 @@ import { trpc } from "src/utils/trpc";
 import { TextInput } from "@mantine/core";
 //Utils
 import { z } from "zod";
+import { toast } from "react-hot-toast";
 
 const CreateChannelPanel = () => {
   const router = useRouter();
   const [channelName, setChannelName] = React.useState("");
-  const [touched, setTouched] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState("");
   const createRandomChannel = trpc.channel.createRandom.useMutation();
   const createChannel = trpc.channel.create.useMutation();
   const allChannels = trpc.channel.getAll.useQuery();
@@ -31,10 +30,12 @@ const CreateChannelPanel = () => {
     const existingChannel = allChannels.data?.find(
       (channel) => channel.id === channelName.trim().replace(/ +/g, "-")
     );
+    let errorMessage = "";
 
     if (existingChannel) {
-      setTouched(true);
-      setErrorMessage("Channel name already exists");
+      errorMessage = "Channel name already exists";
+      toast.error(errorMessage);
+
       return;
     }
 
@@ -44,17 +45,15 @@ const CreateChannelPanel = () => {
       });
       const channelUrl = `/channel/${channel.id}`;
       router.push(channelUrl);
-      setTouched(false);
 
       return channel;
     }
 
     if (!results.success) {
       const formattedErrors = results.error.format();
-      setErrorMessage(formattedErrors.channelName?._errors[0] || "");
-      setTouched(true);
-    } else {
-      setErrorMessage("");
+      errorMessage = formattedErrors.channelName?._errors[0] || "";
+
+      toast.error(errorMessage);
     }
   };
 
@@ -100,18 +99,14 @@ const CreateChannelPanel = () => {
               placeholder="Type here"
               autoComplete="off"
               spellCheck="false"
-              error={touched ? errorMessage : ""}
               value={channelName}
               onChange={(event) => {
                 setChannelName(event.target.value);
-                setTouched(false);
               }}
-              onBlur={() => setTouched(false)}
             />
             <button
               className="btn-primary btn-sm btn mt-6 w-20 self-end"
               type="submit"
-              onBlur={() => setTouched(false)}
               onClick={handleCreateChannel}
             >
               Create
@@ -119,7 +114,7 @@ const CreateChannelPanel = () => {
           </form>
         </label>
       </label>
-      <div className="divider">OR</div>
+      <div className="divider text-neutral-content">OR</div>
       <button
         className="btn-secondary btn-lg btn text-base md:text-lg"
         type="button"

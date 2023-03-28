@@ -6,6 +6,7 @@ import { trpc } from "src/utils/trpc";
 
 import "src/styles/globals.css";
 import { Asap } from "@next/font/google";
+import { Toaster } from "react-hot-toast";
 
 const asap = Asap({ subsets: ["latin"] });
 
@@ -25,6 +26,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }
       `}</style>
       <SessionProvider session={session}>
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              backgroundColor: "#414558",
+              color: "#c2cbf5",
+            },
+          }}
+        />
         <Component {...pageProps} />
       </SessionProvider>
     </>
