@@ -52,10 +52,12 @@ const ColorPicker = (props: ColorPickerProps) => {
   return (
     <div className="flex w-full flex-col items-center">
       <div className="flex self-stretch">
-        <label {...labelProps}>{label}</label>
+        <label {...labelProps} className="text-neutral-content">
+          {label}
+        </label>
         <output
           {...outputProps}
-          className="flex-shrink-0 flex-grow basis-auto text-end"
+          className="flex-shrink-0 flex-grow basis-auto text-end text-neutral-content"
         >
           {state.value.formatChannelValue(props.channel, locale)}
         </output>
