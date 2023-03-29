@@ -7,6 +7,7 @@ import { trpc } from "src/utils/trpc";
 import "src/styles/globals.css";
 import { Asap } from "@next/font/google";
 import { Toaster } from "react-hot-toast";
+import { useWindowSize } from "usehooks-ts";
 
 const asap = Asap({ subsets: ["latin"] });
 
@@ -14,6 +15,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  const { width } = useWindowSize();
+  const isSmall = width <= 768;
   return (
     <>
       <style jsx global>{`
@@ -27,7 +30,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       `}</style>
       <SessionProvider session={session}>
         <Toaster
-          position="bottom-right"
+          position={isSmall ? "top-right" : "bottom-right"}
           toastOptions={{
             style: {
               backgroundColor: "#414558",
