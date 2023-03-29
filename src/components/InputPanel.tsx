@@ -3,10 +3,10 @@ import * as React from "react";
 import { trpc } from "src/utils/trpc";
 //Utils
 import { z } from "zod";
+import { toast } from "react-hot-toast";
 //Components
 import { ActionIcon, TextInput } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons";
-import { toast } from "react-hot-toast";
 
 type InputPanelProps = {
   channelId: string;

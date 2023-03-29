@@ -10,13 +10,13 @@ import { toast } from "react-hot-toast";
 
 const CreateChannelPanel = () => {
   const router = useRouter();
-  const [channelName, setChannelName] = React.useState("");
+  const [channelId, setchannelId] = React.useState("");
   const createRandomChannel = trpc.channel.createRandom.useMutation();
   const createChannel = trpc.channel.create.useMutation();
   const allChannels = trpc.channel.getAll.useQuery();
 
   const inputSchema = z.object({
-    channelName: z
+    channelId: z
       .string()
       .trim()
       .min(1, "Channel name can't be empty")
@@ -25,10 +25,10 @@ const CreateChannelPanel = () => {
 
   const handleCreateChannel = async () => {
     const results = inputSchema.safeParse({
-      channelName: channelName,
+      channelId: channelId,
     });
     const existingChannel = allChannels.data?.find(
-      (channel) => channel.id === channelName.trim().replace(/ +/g, "-")
+      (channel) => channel.id === channelId.trim().replace(/ +/g, "-")
     );
     let errorMessage = "";
 
@@ -41,7 +41,7 @@ const CreateChannelPanel = () => {
 
     if (results.success) {
       const channel = await createChannel.mutateAsync({
-        channelName: channelName.trim().replace(/ +/g, "-"),
+        channelId: channelId.trim().replace(/ +/g, "-").toLowerCase(),
       });
       const channelUrl = `/channel/${channel.id}`;
       router.push(channelUrl);
@@ -51,7 +51,7 @@ const CreateChannelPanel = () => {
 
     if (!results.success) {
       const formattedErrors = results.error.format();
-      errorMessage = formattedErrors.channelName?._errors[0] || "";
+      errorMessage = formattedErrors.channelId?._errors[0] || "";
 
       toast.error(errorMessage);
     }
@@ -78,7 +78,7 @@ const CreateChannelPanel = () => {
         type="checkbox"
         id="my-modal-5"
         className="modal-toggle"
-        onBlur={() => setChannelName("")}
+        onBlur={() => setchannelId("")}
       />
       <label htmlFor="my-modal-5" className="modal cursor-pointer">
         <label className="modal-box relative" htmlFor="">
@@ -99,9 +99,9 @@ const CreateChannelPanel = () => {
               placeholder="Type here"
               autoComplete="off"
               spellCheck="false"
-              value={channelName}
+              value={channelId}
               onChange={(event) => {
-                setChannelName(event.target.value);
+                setchannelId(event.target.value);
               }}
             />
             <button
