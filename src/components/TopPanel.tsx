@@ -1,4 +1,5 @@
 import * as React from "react";
+import Image from "next/image";
 //Backend
 import { trpc } from "src/utils/trpc";
 import { signIn, useSession, signOut } from "next-auth/react";
@@ -41,10 +42,11 @@ const TopPanel = () => {
       ) : (
         <>
           <div className="mr-auto flex items-center gap-2 text-lg">
-            {/*eslint-disable-next-line @next/next/no-img-element*/}
-            <img
+            <Image
               src={session.data?.user?.image ?? nullUser.image}
-              alt="User logo"
+              alt={`${session.data?.user?.name}'s picture`}
+              width={48}
+              height={48}
               className="h-10 w-10 rounded-full md:h-12 md:w-12"
               draggable={false}
             />
