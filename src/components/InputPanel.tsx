@@ -45,13 +45,7 @@ const InputPanel = ({ channelId }: InputPanelProps) => {
   };
 
   return (
-    <form
-      className="message-input-styles w-full max-w-lg"
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSendMessage;
-      }}
-    >
+    <div className="message-input-styles w-full max-w-lg">
       <TextInput
         type="search"
         radius="md"
@@ -62,6 +56,12 @@ const InputPanel = ({ channelId }: InputPanelProps) => {
         value={message}
         onChange={(event) => {
           setMessage(event.target.value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleSendMessage();
+          }
         }}
         rightSectionWidth={42}
         rightSection={
@@ -77,7 +77,7 @@ const InputPanel = ({ channelId }: InputPanelProps) => {
           </ActionIcon>
         }
       />
-    </form>
+    </div>
   );
 };
 

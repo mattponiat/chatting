@@ -87,13 +87,7 @@ const CreateChannelPanel = () => {
           <h3 className="mb-6 text-xl font-bold text-neutral-content">
             Set your channel&apos;s name
           </h3>
-          <form
-            className="message-input-styles flex w-full flex-col"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleCreateChannel;
-            }}
-          >
+          <div className="message-input-styles flex w-full flex-col">
             <TextInput
               type="search"
               radius="md"
@@ -104,6 +98,12 @@ const CreateChannelPanel = () => {
               value={channelId}
               onChange={(event) => {
                 setchannelId(event.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleCreateChannel();
+                }
               }}
             />
             {createChannel.isLoading ? (
@@ -117,7 +117,7 @@ const CreateChannelPanel = () => {
                 Create
               </button>
             )}
-          </form>
+          </div>
         </label>
       </label>
       <div className="divider text-neutral-content">OR</div>
