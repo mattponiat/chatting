@@ -28,7 +28,8 @@ const CreateChannelPanel = () => {
       channelId: channelId,
     });
     const existingChannel = allChannels.data?.find(
-      (channel) => channel.id === channelId.trim().replace(/ +/g, "-")
+      (channel) =>
+        channel.id === channelId.trim().replace(/ +/g, "-").toLowerCase()
     );
     let errorMessage = "";
 
