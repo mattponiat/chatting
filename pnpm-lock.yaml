@@ -26,6 +26,8 @@ specifiers:
   '@types/react-dom': ^18.0.11
   '@typescript-eslint/eslint-plugin': ^5.52.0
   '@typescript-eslint/parser': ^5.52.0
+  '@upstash/ratelimit': ^0.4.1
+  '@upstash/redis': ^1.20.1
   autoprefixer: ^10.4.13
   csstype: ^3.1.1
   daisyui: ^2.50.1
@@ -72,6 +74,8 @@ dependencies:
   '@trpc/next': 10.0.0-rc.4_kicugicszcphvxmyxjt4sfm4t4
   '@trpc/react-query': 10.0.0-rc.4_oah74ygki643gf2zpscij3kave
   '@trpc/server': 10.0.0-rc.4
+  '@upstash/ratelimit': 0.4.1_@upstash+redis@1.20.1
+  '@upstash/redis': 1.20.1
   csstype: 3.1.1
   daisyui: 2.50.1_gbtt6ss3tbiz4yjtvdr6fbrj44
   date-fns: 2.29.3
@@ -1567,6 +1571,34 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
+  /@upstash/core-analytics/0.0.6:
+    resolution: {integrity: sha512-cpPSR0XJAJs4Ddz9nq3tINlPS5aLfWVCqhhtHnXt4p7qr5+/Znlt1Es736poB/9rnl1hAHrOsOvVj46NEXcVqA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@upstash/redis': 1.20.1
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upstash/ratelimit/0.4.1_@upstash+redis@1.20.1:
+    resolution: {integrity: sha512-NdL4E8jOrqSIOuDFVx5TLdh0/2tefgnrzBeqx+soy1cjGnx8sKdCZpOi4xhG5rm6F9ch89ZzIcBm6iRhx+tLgA==}
+    peerDependencies:
+      '@upstash/redis': ^1.20.1
+    dependencies:
+      '@upstash/core-analytics': 0.0.6
+      '@upstash/redis': 1.20.1
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upstash/redis/1.20.1:
+    resolution: {integrity: sha512-mYwV8uvQROJnq5aOxmQH3KDa0E8+DRdU0zJ/VGQV84HrhQQNy0IsLFFTo97WEhZAlHcJnVbrbwqUK9disWqx/w==}
+    dependencies:
+      isomorphic-fetch: 3.0.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /abort-controller/3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
     engines: {node: '>=6.5'}
@@ -3046,6 +3078,15 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
+  /isomorphic-fetch/3.0.0:
+    resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
+    dependencies:
+      node-fetch: 2.6.9
+      whatwg-fetch: 3.6.2
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /jose/4.12.0:
     resolution: {integrity: sha512-wW1u3cK81b+SFcHjGC8zw87yuyUweEFe0UJirrXEw1NasW00eF7sZjeG3SLBGz001ozxQ46Y9sofDvhBmWFtXQ==}
     dev: false
@@ -4202,6 +4243,10 @@ packages:
 
   /webidl-conversions/3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
+    dev: false
+
+  /whatwg-fetch/3.6.2:
+    resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
     dev: false
 
   /whatwg-url/5.0.0:

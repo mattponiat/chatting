@@ -1,6 +1,16 @@
 import { z } from "zod";
 import { pusher } from "src/server/common/pusher";
 import { publicProcedure, router } from "src/server/trpc/trpc";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+import { TRPCError } from "@trpc/server";
+
+// Create a new ratelimiter, that allows 5 requests per 10 seconds
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(5, "10 s"),
+  analytics: true,
+});
 
 export const messageRouter = router({
   send: publicProcedure
@@ -25,6 +35,16 @@ export const messageRouter = router({
           author: true,
         },
       });
+      const sessionUser = ctx.session?.user?.id || null;
+
+      const { success } = await ratelimit.limit(sessionUser as string);
+      if (!success) {
+        throw new TRPCError({
+          code: "TOO_MANY_REQUESTS",
+          message: "Too many requests!",
+        });
+      }
+
       await pusher.trigger(input.channelId, "message", message);
 
       return message;
