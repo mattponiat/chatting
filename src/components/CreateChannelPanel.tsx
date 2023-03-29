@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { trpc } from "src/utils/trpc";
 //Components
 import { TextInput } from "@mantine/core";
+import { MoonLoader } from "react-spinners";
 //Utils
 import { z } from "zod";
 import { toast } from "react-hot-toast";
@@ -68,7 +69,7 @@ const CreateChannelPanel = () => {
   };
 
   return (
-    <div className="my-auto flex flex-col">
+    <div className="my-auto flex w-72 flex-col">
       <label
         htmlFor="my-modal-5"
         className="btn-primary btn-lg btn text-base md:text-lg"
@@ -105,24 +106,32 @@ const CreateChannelPanel = () => {
                 setchannelId(event.target.value);
               }}
             />
-            <button
-              className="btn-primary btn-sm btn mt-6 w-20 self-end"
-              type="submit"
-              onClick={handleCreateChannel}
-            >
-              Create
-            </button>
+            {createChannel.isLoading ? (
+              <MoonLoader className="mt-6 self-end" size={24} color="#ff79c6" />
+            ) : (
+              <button
+                className="btn-primary btn-sm btn mt-6 w-20 self-end"
+                type="submit"
+                onClick={handleCreateChannel}
+              >
+                Create
+              </button>
+            )}
           </form>
         </label>
       </label>
       <div className="divider text-neutral-content">OR</div>
-      <button
-        className="btn-secondary btn-lg btn text-base md:text-lg"
-        type="button"
-        onClick={handleCreateRandomChannel}
-      >
-        Create random channel
-      </button>
+      {createRandomChannel.isLoading ? (
+        <MoonLoader className="mt-6 self-center" size={30} color="#bd93f9" />
+      ) : (
+        <button
+          className="btn-secondary btn-lg btn text-base md:text-lg"
+          type="button"
+          onClick={handleCreateRandomChannel}
+        >
+          Create random channel
+        </button>
+      )}
     </div>
   );
 };
