@@ -1,10 +1,18 @@
 import { TRPCError } from "@trpc/server";
-import { publicProcedure, router } from "src/server/trpc/trpc";
+import { publicProcedure, createTRPCRouter } from "src/server/api/trpc";
 import { z } from "zod";
 
-export const channelRouter = router({
+export const channelRouter = createTRPCRouter({
   create: publicProcedure
-    .input(z.object({ channelId: z.string() }))
+    .input(
+      z.object({
+        channelId: z
+          .string()
+          .trim()
+          .min(1, "Channel name can't be empty")
+          .max(20, "Channel name can't be longer than 20 characters"),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const channel = await ctx.prisma.channel.create({
         data: {

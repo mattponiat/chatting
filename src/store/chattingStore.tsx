@@ -17,8 +17,7 @@ const useChattingStore = create<ChattingStore>()((set) => ({
     image:
       "https://t3.ftcdn.net/jpg/02/09/37/00/360_F_209370065_JLXhrc5inEmGl52SyvSPeVB23hB6IjrR.jpg",
   },
-  listRef:
-    React.createRef<HTMLUListElement>() as React.RefObject<HTMLUListElement>,
+  listRef: React.createRef<HTMLUListElement>(),
 }));
 
 export default useChattingStore;

@@ -1,7 +1,7 @@
 import * as React from "react";
 import Image from "next/image";
 //Backend
-import { trpc } from "src/utils/trpc";
+import { api } from "src/utils/api";
 import { signIn, useSession, signOut } from "next-auth/react";
 //Components
 import ColorPicker from "src/components/ColorPicker";
@@ -10,11 +10,11 @@ import useChattingStore from "src/store/chattingStore";
 
 const TopPanel = () => {
   const session = useSession();
-  const { data: currentUser } = trpc.user.getCurrent.useQuery(undefined, {
+  const { data: currentUser } = api.user.getCurrent.useQuery(undefined, {
     enabled: session.data?.user !== undefined,
   });
-  const utils = trpc.useContext();
-  const changeColor = trpc.user.changeColor.useMutation({
+  const utils = api.useContext();
+  const changeColor = api.user.changeColor.useMutation({
     onSuccess: () => utils.user.getCurrent.invalidate(),
   });
   const colorRef = React.useRef("");
@@ -35,7 +35,7 @@ const TopPanel = () => {
       {session.status === "unauthenticated" || session.status === "loading" ? (
         <button
           className="btn mr-auto w-16 justify-center rounded-lg p-2 text-xs outline outline-1 outline-gray-600 md:w-auto md:p-4 md:text-[14px]"
-          onClick={() => signIn()}
+          onClick={() => void signIn()}
         >
           Log In
         </button>
@@ -44,7 +44,7 @@ const TopPanel = () => {
           <div className="mr-auto flex items-center gap-2 text-lg">
             <Image
               src={session.data?.user?.image ?? nullUser.image}
-              alt={`${session.data?.user?.name}'s picture`}
+              alt={`${session.data?.user?.name as string}'s picture`}
               width={48}
               height={48}
               className="h-10 w-10 rounded-full md:h-12 md:w-12"
@@ -86,7 +86,7 @@ const TopPanel = () => {
           ) : null}
           <button
             className="btn ml-auto w-20 justify-center rounded-lg p-2 text-xs outline outline-1 outline-gray-600 md:w-auto md:p-4 md:text-[14px]"
-            onClick={() => signOut()}
+            onClick={() => void signOut()}
           >
             Log Out
           </button>
@@ -138,7 +138,7 @@ const hexToHsl = (hex: string, valuesOnly = false) => {
   s = Math.round(s * 100);
   l = Math.round(l * 100);
 
-  cssString = h + "," + s + "%," + l + "%";
+  cssString = `${h},${s}%,${l}%`;
   cssString = !valuesOnly ? "hsl(" + cssString + ")" : cssString;
 
   return cssString;

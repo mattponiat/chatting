@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { router, protectedProcedure } from "src/server/trpc/trpc";
+import { protectedProcedure, createTRPCRouter } from "src/server/api/trpc";
 
-export const userRouter = router({
+export const userRouter = createTRPCRouter({
   changeColor: protectedProcedure
     .input(
       z.object({

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { pusher } from "src/server/common/pusher";
-import { publicProcedure, router } from "src/server/trpc/trpc";
+import { publicProcedure, createTRPCRouter } from "src/server/api/trpc";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { TRPCError } from "@trpc/server";
@@ -12,7 +12,7 @@ const ratelimit = new Ratelimit({
   analytics: true,
 });
 
-export const messageRouter = router({
+export const messageRouter = createTRPCRouter({
   send: publicProcedure
     .input(
       z.object({

@@ -1,12 +1,11 @@
 import * as React from "react";
 //Backend
-import { trpc } from "src/utils/trpc";
+import { api } from "src/utils/api";
 //Utils
-import { z } from "zod";
 import { toast } from "react-hot-toast";
 //Components
 import { ActionIcon, TextInput } from "@mantine/core";
-import { IconArrowRight } from "@tabler/icons";
+import { IconArrowRight } from "@tabler/icons-react";
 
 type InputPanelProps = {
   channelId: string;
@@ -14,34 +13,24 @@ type InputPanelProps = {
 
 const InputPanel = ({ channelId }: InputPanelProps) => {
   const [message, setMessage] = React.useState("");
-  const sendMessage = trpc.message.send.useMutation();
+  const sendMessage = api.message.send.useMutation({
+    onSuccess: () => {
+      setMessage("");
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.text;
 
-  const inputSchema = z.object({
-    message: z
-      .string()
-      .trim()
-      .min(1, "Message can't be empty")
-      .max(500, "Message can't be longer than 500 characters"),
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      }
+    },
   });
 
   const handleSendMessage = () => {
-    const results = inputSchema.safeParse({
-      message: message,
+    sendMessage.mutate({
+      text: message,
+      channelId: channelId,
     });
-
-    if (results.success) {
-      sendMessage.mutate({
-        text: message,
-        channelId: channelId,
-      });
-      setMessage("");
-    }
-
-    if (!results.success) {
-      const formattedErrors = results.error.format();
-      const errorMessage = formattedErrors.message?._errors[0] || "";
-      toast.error(errorMessage);
-    }
   };
 
   return (

@@ -4,13 +4,13 @@ import * as React from "react";
 import { flushSync } from "react-dom";
 //Backend
 import type { Message, User } from "@prisma/client";
-import { trpc } from "src/utils/trpc";
+import { api } from "src/utils/api";
 import Pusher from "pusher-js";
-import { env } from "src/env/client.mjs";
+import { env } from "src/env.mjs";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { appRouter } from "src/server/trpc/router/_app";
-import { prisma } from "src/server/db/client";
 import superjson from "superjson";
+import { appRouter } from "~/server/api/root";
+import { prisma } from "~/server/db";
 //Components
 import TopPanel from "src/components/TopPanel";
 import InputPanel from "src/components/InputPanel";
@@ -19,10 +19,11 @@ import WrongChannelPanel from "src/components/WrongChannelPanel";
 //Store
 import useChattingStore from "src/store/chattingStore";
 
+
 let loaded = false;
 
 const ChannelPage: NextPage<{ channelId: string }> = ({ channelId }) => {
-  const { data: oldMessages, status } = trpc.message.getAll.useQuery(
+  const { data: oldMessages, status } = api.message.getAll.useQuery(
     { channelId: channelId },
     { enabled: !loaded }
   );
@@ -33,7 +34,7 @@ const ChannelPage: NextPage<{ channelId: string }> = ({ channelId }) => {
   >([]);
   const [errorCode, setErrorCode] = React.useState(0);
   const { listRef } = useChattingStore((state) => ({ listRef: state.listRef }));
-  const { data: existingChannel } = trpc.channel.getChannelById.useQuery({
+  const { data: existingChannel } = api.channel.getChannelById.useQuery({
     channelId,
   });
 

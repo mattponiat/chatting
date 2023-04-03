@@ -1,69 +1,54 @@
 import * as React from "react";
 import { useRouter } from "next/router";
 //Backend
-import { trpc } from "src/utils/trpc";
+import { api } from "src/utils/api";
 //Components
 import { TextInput } from "@mantine/core";
 import { MoonLoader } from "react-spinners";
 //Utils
-import { z } from "zod";
 import { toast } from "react-hot-toast";
 
 const CreateChannelPanel = () => {
   const router = useRouter();
   const [channelId, setchannelId] = React.useState("");
-  const createRandomChannel = trpc.channel.createRandom.useMutation();
-  const createChannel = trpc.channel.create.useMutation();
-  const allChannels = trpc.channel.getAll.useQuery();
+  const allChannels = api.channel.getAll.useQuery();
+  const existingChannel = allChannels.data?.find(
+    (channel) =>
+      channel.id === channelId.trim().replace(/ +/g, "-").toLowerCase()
+  );
+  const createRandomChannel = api.channel.createRandom.useMutation();
+  const createChannel = api.channel.create.useMutation({
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.channelId;
 
-  const inputSchema = z.object({
-    channelId: z
-      .string()
-      .trim()
-      .min(1, "Channel name can't be empty")
-      .max(20, "Channel name can't be longer than 20 characters"),
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      }
+    },
   });
 
   const handleCreateChannel = async () => {
-    const results = inputSchema.safeParse({
-      channelId: channelId,
-    });
-    const existingChannel = allChannels.data?.find(
-      (channel) =>
-        channel.id === channelId.trim().replace(/ +/g, "-").toLowerCase()
-    );
-    let errorMessage = "";
-
     if (existingChannel) {
-      errorMessage = "Channel name already exists";
-      toast.error(errorMessage);
-
+      toast.error("Channel name already exists");
       return;
     }
 
-    if (results.success) {
-      const channel = await createChannel.mutateAsync({
-        channelId: channelId.trim().replace(/ +/g, "-").toLowerCase(),
-      });
-      const channelUrl = `/channel/${channel.id}`;
-      router.push(channelUrl);
+    const channel = await createChannel.mutateAsync({
+      channelId: channelId.trim().replace(/ +/g, "-").toLowerCase(),
+    });
+    const channelUrl = `/channel/${channel.id}`;
+    await router.push(channelUrl);
 
-      return channel;
-    }
-
-    if (!results.success) {
-      const formattedErrors = results.error.format();
-      errorMessage = formattedErrors.channelId?._errors[0] || "";
-
-      toast.error(errorMessage);
-    }
+    return channel;
   };
 
   const handleCreateRandomChannel = async () => {
     const randomChannel = await createRandomChannel.mutateAsync();
     const randomChannelUrl = `/channel/${randomChannel.id}`;
 
-    router.push(randomChannelUrl);
+    console.log(randomChannel);
+
+    await router.push(randomChannelUrl);
 
     return randomChannel;
   };
@@ -102,7 +87,7 @@ const CreateChannelPanel = () => {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  handleCreateChannel();
+                  void handleCreateChannel();
                 }
               }}
             />
@@ -112,7 +97,7 @@ const CreateChannelPanel = () => {
               <button
                 className="btn-primary btn-sm btn mt-6 w-20 self-end"
                 type="submit"
-                onClick={handleCreateChannel}
+                onClick={() => void handleCreateChannel()}
               >
                 Create
               </button>
@@ -127,7 +112,7 @@ const CreateChannelPanel = () => {
         <button
           className="btn-secondary btn-lg btn text-base md:text-lg"
           type="button"
-          onClick={handleCreateRandomChannel}
+          onClick={() => void handleCreateRandomChannel()}
         >
           Create random channel
         </button>
