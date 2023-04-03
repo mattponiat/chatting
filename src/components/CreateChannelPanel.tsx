@@ -46,8 +46,6 @@ const CreateChannelPanel = () => {
     const randomChannel = await createRandomChannel.mutateAsync();
     const randomChannelUrl = `/channel/${randomChannel.id}`;
 
-    console.log(randomChannel);
-
     await router.push(randomChannelUrl);
 
     return randomChannel;
