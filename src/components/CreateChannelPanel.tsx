@@ -24,15 +24,14 @@ const CreateChannelPanel = () => {
       if (errorMessage && errorMessage[0]) {
         toast.error(errorMessage[0]);
       }
+
+      if (existingChannel) {
+        toast.error("Channel name already exists");
+      }
     },
   });
 
   const handleCreateChannel = async () => {
-    if (existingChannel) {
-      toast.error("Channel name already exists");
-      return;
-    }
-
     const channel = await createChannel.mutateAsync({
       channelId: channelId.trim().replace(/ +/g, "-").toLowerCase(),
     });
