@@ -34,19 +34,19 @@ export const channelRouter = createTRPCRouter({
 
     return allChannels;
   }),
-  getChannelById: publicProcedure
+  getById: publicProcedure
     .input(z.object({ channelId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const channel = await ctx.prisma.channel.findUnique({
+      const uniqueChannel = await ctx.prisma.channel.findUnique({
         where: { id: input.channelId },
       });
 
-      if (!channel)
+      if (!uniqueChannel)
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Channel not found",
         });
 
-      return channel;
+      return uniqueChannel;
     }),
 });

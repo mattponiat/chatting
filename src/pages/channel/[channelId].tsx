@@ -19,7 +19,6 @@ import WrongChannelPanel from "src/components/WrongChannelPanel";
 //Store
 import useChattingStore from "src/store/chattingStore";
 
-
 let loaded = false;
 
 const ChannelPage: NextPage<{ channelId: string }> = ({ channelId }) => {
@@ -34,7 +33,7 @@ const ChannelPage: NextPage<{ channelId: string }> = ({ channelId }) => {
   >([]);
   const [errorCode, setErrorCode] = React.useState(0);
   const { listRef } = useChattingStore((state) => ({ listRef: state.listRef }));
-  const { data: existingChannel } = api.channel.getChannelById.useQuery({
+  const { data: existingChannel } = api.channel.getById.useQuery({
     channelId,
   });
 
@@ -126,7 +125,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   if (typeof channelId !== "string") throw new Error("No channel id");
 
-  await ssg.channel.getChannelById.prefetch({ channelId: channelId });
+  await ssg.channel.getById.prefetch({ channelId: channelId });
 
   return {
     props: {
