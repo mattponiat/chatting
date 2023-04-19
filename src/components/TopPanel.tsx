@@ -27,7 +27,7 @@ const TopPanel = () => {
       changeColor.mutate({
         color: colorRef.current,
       });
-    } else return;
+    }
   };
 
   return (
